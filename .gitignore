@@ -1,0 +1,16 @@
+# Binaries
+*.exe
+*.out
+
+# Database files
+*.db
+
+# Environment files
+.env
+
+# OS files
+.DS_Store
+
+# Go build cache
+/bin
+/pkg
