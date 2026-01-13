@@ -31,14 +31,18 @@ func getEvent(c *gin.Context){
 }
 
 func createEvent(c *gin.Context){
+
 	var event models.Event
-	err:=c.ShouldBindJSON(&event)
+	err := c.ShouldBindJSON(&event)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{"message":"Could not parse request data"})
 		return
 	}
-	event.ID=1
-	event.UserID=1
+
+	//event.ID=1
+	userId := c.GetInt64("userId")
+	event.UserID=userId
+
 	err=event.Save()
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create event. Try again later."})
@@ -53,11 +57,18 @@ func updateEvent(c *gin.Context){
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event id."})
 		return
 	}
-	_, err=models.GetEventByID(eventId)
+
+	userId := c.GetInt64("userId")
+	event, err := models.GetEventByID(eventId)
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"message":"Could not fetch the event."})
 		return
 	}
+	if event.UserID != userId{
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized to update event."})
+		return
+	}
+
 	var updatedEvent models.Event
 	err = c.ShouldBindJSON(&updatedEvent)
 	if err != nil{
@@ -79,11 +90,18 @@ func deleteEvent(c *gin.Context){
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event id."})
 		return
 	}
+
+	userId := c.GetInt64("userId")
 	event, err:=models.GetEventByID(eventId)
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"message":"Could not fetch the event."})
 		return
 	}
+	if event.UserID != userId{
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized to delete event."})
+		return
+	}
+
 	err = event.Delete()
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{"message":"Could not delete the event."})
@@ -92,4 +110,16 @@ func deleteEvent(c *gin.Context){
 	c.JSON(http.StatusOK, gin.H{"message":"Event deleted successfully!"})
 
 }
+/*
+authenticated.GET("/myevent", myEvent)
+func myEvent(c *gin.Context){
+	//userId, err:= strconv.ParseInt.(c.Param("id"))
+	//userId := c.GetInt64("userId")
+	var user models.User
+	err := c.ShouldBindJSON(&user)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data."})
+		return
+	}
 
+}*/
