@@ -5,7 +5,7 @@ A RESTful Event Booking API built using **Golang**, **Gin**, and **SQLite**.
 ## Features
 - User Signup & Login (JWT Authentication)
 - Create, Read, Update, Delete Events
-- Secure password hashing
+- Secure password hashing using bcrypt package
 - RESTful API conventions
 - SQLite database
 
