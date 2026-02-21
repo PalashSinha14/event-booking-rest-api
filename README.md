@@ -12,7 +12,7 @@ A RESTful Event Booking API built using **Golang**, **Gin**, and **SQLite**.
 ## Tech Stack
 - Go (Golang)
 - Gin Web Framework
-- SQLite
+- SQLitedb
 - JWT Authentication
 
 ## API Endpoints
