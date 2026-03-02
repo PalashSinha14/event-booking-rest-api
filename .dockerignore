@@ -5,3 +5,5 @@ README.md
 *.db
 *.exe
 api-test
+.env.local
+pgdata

@@ -3,6 +3,153 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+)
+
+var DB *sql.DB
+
+func InitDB() {
+
+	env := os.Getenv("ENV")
+
+	envFile := ".env.local"
+	if env == "docker" {
+		envFile = ".env.docker"
+	}
+
+	err := godotenv.Load(envFile)
+	if err != nil {
+		log.Fatalf("Error loading %s file", envFile)
+	}
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_SSLMODE"),
+	)
+
+	// Open connection (does NOT actually connect yet)
+	DB, err = sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal("Failed to create DB instance:", err)
+	}
+
+	// Retry logic — up to 3 minutes total
+	maxRetries := 90 // 90 × 2s = 180 seconds (3 minutes)
+	retryInterval := 2 * time.Second
+
+	for i := 0; i < maxRetries; i++ {
+
+		err = DB.Ping()
+		if err == nil {
+			log.Println("Connected to PostgreSQL!")
+			break
+		}
+
+		log.Printf("PostgreSQL not ready yet... Retrying (%d/%d)\n", i+1, maxRetries)
+		time.Sleep(retryInterval)
+	}
+
+	if err != nil {
+		log.Fatal("PostgreSQL database not reachable after retries.")
+	}
+
+	// Adjusted for 4GB RAM system
+	DB.SetMaxOpenConns(10)
+	DB.SetMaxIdleConns(5)
+	DB.SetConnMaxLifetime(5 * time.Minute)
+
+	createTables()
+}
+
+/*
+package db
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+)
+
+var DB *sql.DB
+
+func InitDB() {
+
+	env := os.Getenv("ENV")
+
+	envFile := ".env.local"
+	if env == "docker" {
+		envFile = ".env.docker"
+	}
+
+	err := godotenv.Load(envFile)
+	if err != nil {
+		log.Fatalf("Error loading %s file", envFile)
+	}
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_SSLMODE"),
+	)
+
+	var dbInstance *sql.DB
+
+	for i := 0; i < 10; i++ {
+
+		dbInstance, err = sql.Open("postgres", connStr)
+		if err != nil {
+			log.Println("Waiting for PostgreSQL to start...")
+			time.Sleep(2 * time.Second)
+			continue
+		}
+
+		err = dbInstance.Ping()
+		if err == nil {
+			log.Println("Connected to PostgreSQL!")
+			DB = dbInstance
+			break
+		}
+
+		log.Println("PostgreSQL not ready yet... Retrying in 2s")
+		time.Sleep(2 * time.Second)
+	}
+
+	if DB == nil {
+		log.Fatal("PostgreSQL database not reachable after retries.")
+	}
+
+	DB.SetMaxOpenConns(25)
+	DB.SetMaxIdleConns(25)
+
+	createTables()
+}*/
+
+/*
+package db
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -13,14 +160,27 @@ var DB *sql.DB
 
 func InitDB() {
 
-	
-	err := godotenv.Load()
-	if err != nil {
-		panic("Error loading .env file")
+	env := os.Getenv("ENV")
+
+	envFile := ".env.local"
+	if env == "docker" {
+    	envFile = ".env.docker"
 	}
 
+	err := godotenv.Load(envFile)
+	if err != nil {
+    	log.Fatalf("Error loading %s file", envFile)
+	}
+
+
+//	err := godotenv.Load()
+//	if err != nil {
+//		panic("Error loading .env file")
+//	}
+
+
 	connStr := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable ",		
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable ",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
@@ -43,7 +203,9 @@ func InitDB() {
 	DB.SetMaxIdleConns(25)
 
 	createTables()
+
 }
+*/
 
 func createTables() {
 
@@ -92,8 +254,6 @@ func createTables() {
 		panic("Could not create registrations table")
 	}
 }
-
-
 
 /*
 package db
@@ -145,7 +305,7 @@ func createTables(){
 	_, err = DB.Exec(createEventsTable)
 	if err != nil{
 		panic("Could not create events table.")
-	} 
+	}
 
 	createRegistrationsTable := `
 	CREATE TABLE IF NOT EXISTS registrations (

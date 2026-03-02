@@ -1,27 +1,24 @@
-version: "3.8"
-
 services:
-
-  api:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    env_file:
-      - .env
-
-  db:
+  postgres:
     image: postgres:15
+    container_name: postgres-db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: eventsdb
+    env_file:
+      - .env.docker
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: go-api
+    depends_on:
+      - postgres
+    environment:
+      - ENV=docker
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_data:

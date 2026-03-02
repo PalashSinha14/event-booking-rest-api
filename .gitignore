@@ -1,19 +1,34 @@
 # Binaries
 *.exe
 *.out
+*.test
 
-# Database files
-*.db
-
-# Environment files
-.env
-
-# OS files
-.DS_Store
+# Build folders
+/bin/
+/dist/
 
 # Go build cache
 /bin
 /pkg
 
-.env
+# Logs
+*.log
+
+# Database files
+*.db
 api.db
+*.sqlite
+pgdata/
+
+# Environment files
+.env
+.env.local
+.env.docker
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
