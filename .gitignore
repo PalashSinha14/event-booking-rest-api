@@ -20,7 +20,10 @@ api.db
 *.sqlite
 pgdata/
 
-
+# Environment files
+.env
+.env.local
+.env.docker
 
 # OS Files
 .DS_Store
