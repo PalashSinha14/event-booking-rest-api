@@ -1,6 +1,57 @@
 package main
 
 import (
+	"log"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/palashsinha14/go-rest-api/db"
+	"github.com/palashsinha14/go-rest-api/routes"
+)
+
+func main() {
+
+	db.InitDB()
+
+	server := gin.Default()
+
+	server.Static("/static", "./frontend")
+	server.LoadHTMLGlob("frontend/*.html")
+
+	// Frontend routes
+	server.GET("/", func(c *gin.Context) {
+		c.HTML(200, "index.html", nil)
+	})
+
+	server.GET("/login-page", func(c *gin.Context) {
+		c.HTML(200, "login.html", nil)
+	})
+
+	server.GET("/signup-page", func(c *gin.Context) {
+		c.HTML(200, "signup.html", nil)
+	})
+
+	routes.RegisterRoutes(server)
+
+	// Render / Docker dynamic port
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Println("Server running on port:", port)
+
+	server.Run(":" + port)
+}
+
+
+
+
+
+/*
+package main
+
+import (
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +86,7 @@ func main() {
 	}
 	// Start server
 	server.Run(":" + port)
-}
+}*/
 
 /*
 package main

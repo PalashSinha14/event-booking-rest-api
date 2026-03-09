@@ -22,6 +22,95 @@ func InitDB() {
 		envFile = ".env.docker"
 	}
 
+	// Try loading env file but DO NOT crash if missing
+	err := godotenv.Load(envFile)
+	if err != nil {
+		log.Printf("%s not found. Using system environment variables.\n", envFile)
+	}
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		getSSLMode(),
+	)
+
+	DB, err = sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal("Failed to create DB instance:", err)
+	}
+
+	// Retry DB connection
+	maxRetries := 90
+	retryInterval := 2 * time.Second
+
+	for i := 0; i < maxRetries; i++ {
+
+		err = DB.Ping()
+		if err == nil {
+			log.Println("Connected to PostgreSQL!")
+			break
+		}
+
+		log.Printf("PostgreSQL not ready yet... Retrying (%d/%d)\n", i+1, maxRetries)
+		time.Sleep(retryInterval)
+	}
+
+	if err != nil {
+		log.Fatal("PostgreSQL database not reachable after retries.")
+	}
+
+	DB.SetMaxOpenConns(10)
+	DB.SetMaxIdleConns(5)
+	DB.SetConnMaxLifetime(5 * time.Minute)
+
+	createTables()
+}
+
+func getSSLMode() string {
+
+	ssl := os.Getenv("DB_SSLMODE")
+
+	if ssl == "" {
+		// Local default
+		return "disable"
+	}
+
+	return ssl
+}
+
+
+
+
+
+/*
+package db
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+)
+
+var DB *sql.DB
+
+func InitDB() {
+
+	env := os.Getenv("ENV")
+
+	envFile := ".env.local"
+	if env == "docker" {
+		envFile = ".env.docker"
+	}
+
 	err := godotenv.Load(envFile)
 	if err != nil {
 		log.Fatalf("Error loading %s file", envFile)
@@ -69,7 +158,7 @@ func InitDB() {
 	DB.SetConnMaxLifetime(5 * time.Minute)
 
 	createTables()
-}
+}*/
 
 /*
 package db
