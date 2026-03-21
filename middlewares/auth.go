@@ -8,7 +8,17 @@ import (
 )
 
 func Authenticate(c *gin.Context) {
-	token := c.Request.Header.Get("Authorization")
+	//token := c.Request.Header.Get("Authorization")
+	//Reading token as cookie
+	token := c.GetHeader("Authorization")
+
+	if token == "" {
+		cookieToken, err := c.Cookie("token")
+		if err == nil {
+			token = cookieToken
+		}
+	}
+
 	if token == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Not Authorized."})
 		return

@@ -31,6 +31,10 @@ func main() {
 		c.HTML(200, "signup.html", nil)
 	})
 
+	server.GET("/dashboard", func(c *gin.Context) {
+		c.HTML(200, "dashboard.html", nil)
+	})
+
 	routes.RegisterRoutes(server)
 
 	// Render / Docker dynamic port
@@ -43,10 +47,6 @@ func main() {
 
 	server.Run(":" + port)
 }
-
-
-
-
 
 /*
 package main

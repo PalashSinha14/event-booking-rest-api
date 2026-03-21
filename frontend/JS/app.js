@@ -22,7 +22,13 @@ password:password
 
 const data = await res.json();
 
-alert(JSON.stringify(data));
+if (res.ok) {
+    window.location.href = "/dashboard";
+} else {
+    alert(data.message);
+}
+
+//alert(JSON.stringify(data));
 
 });
 }
