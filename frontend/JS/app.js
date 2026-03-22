@@ -1,37 +1,37 @@
 // LOGIN
-const loginForm = document.getElementById("loginForm");
+//const loginForm = document.getElementById("loginForm");
 
-if(loginForm){
-loginForm.addEventListener("submit", async function(e){
+//if(loginForm){
+//loginForm.addEventListener("submit", async function(e){
 
-e.preventDefault();
+//e.preventDefault();
 
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+//const email = document.getElementById("email").value;
+//const password = document.getElementById("password").value;
 
-const res = await fetch("/login",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-email:email,
-password:password
-})
-});
+//const res = await fetch("/login",{
+//method:"POST",
+//headers:{
+//"Content-Type":"application/json"
+//},
+//body:JSON.stringify({
+//email:email,
+//password:password
+//})
+//});
 
-const data = await res.json();
+//const data = await res.json();
 
-if (res.ok) {
-    window.location.href = "/dashboard";
-} else {
-    alert(data.message);
-}
+//if (res.ok) {
+//    window.location.href = "/dashboard";
+//} else {
+//    alert(data.message);
+//}
 
 //alert(JSON.stringify(data));
 
-});
-}
+//});
+//}
 
 
 // SIGNUP

@@ -2,16 +2,24 @@ package models
 
 import (
 	"errors"
+
 	"github.com/palashsinha14/go-rest-api/db"
 	"github.com/palashsinha14/go-rest-api/utils"
 )
 
-type User struct{
-	ID int64
-	Email string `binding:"required"`
-	Password string `binding:"required"` 
+type User struct {
+	ID       int64
+	Email    string `form:"email" binding:"required"`
+	Password string `form:"password" binding:"required"`
 }
 
+/*
+	type User struct{
+		ID int64
+		Email string `binding:"required"`
+		Password string `binding:"required"`
+	}
+*/
 func (u *User) Save() error {
 
 	// PostgreSQL uses $1, $2 instead of ? placeholders
@@ -45,7 +53,6 @@ func (u *User) Save() error {
 
 	return nil
 }
-
 
 /*
 func (u User) Save() error{
@@ -84,7 +91,6 @@ func (u *User) ValidateCredentials() error{
 	return nil
 }
 */
-
 
 func (u *User) ValidateCredentials() error {
 

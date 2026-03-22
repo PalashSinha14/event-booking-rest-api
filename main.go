@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/palashsinha14/go-rest-api/db"
 	"github.com/palashsinha14/go-rest-api/routes"
+	"github.com/palashsinha14/go-rest-api/middlewares"
 )
 
 func main() {
@@ -31,10 +32,17 @@ func main() {
 		c.HTML(200, "signup.html", nil)
 	})
 
-	server.GET("/dashboard", func(c *gin.Context) {
+/*	server.GET("/dashboard", func(c *gin.Context) {
+		c.HTML(200, "dashboard.html", nil)
+	})*/
+/*
+	server.GET("/dashboard", middlewares.AuthMiddlewareHTML, func(c *gin.Context) {
+	c.HTML(200, "dashboard.html", nil)
+	})
+*/
+	server.GET("/dashboard", middlewares.Authenticate, func(c *gin.Context) {
 		c.HTML(200, "dashboard.html", nil)
 	})
-
 	routes.RegisterRoutes(server)
 
 	// Render / Docker dynamic port
