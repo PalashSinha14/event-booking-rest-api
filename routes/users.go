@@ -47,7 +47,7 @@ func login(c *gin.Context) {
 	}
 
 	// ✅ Set cookie
-	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	c.SetCookie("token", token, 3600, "/", "", false, true)
 
 	// ✅ Redirect to dashboard
 	c.Redirect(http.StatusSeeOther, "/dashboard")
