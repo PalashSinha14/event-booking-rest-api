@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	//"github.com/gin-gonic/gin/binding"
 	"github.com/palashsinha14/go-rest-api/models"
 	"github.com/palashsinha14/go-rest-api/utils"
 )
@@ -27,7 +26,6 @@ func signup(c *gin.Context) {
 func login(c *gin.Context) {
 	var user models.User
 
-	// 🔥 THIS is the correct binding for HTML forms
 	err := c.ShouldBind(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input"})
@@ -46,10 +44,10 @@ func login(c *gin.Context) {
 		return
 	}
 
-	// ✅ Set cookie
-	c.SetCookie("token", token, 3600, "/", "", false, true)
+	// Set cookie
+	c.SetCookie("token", token, 3600, "/", "", true, true)
 
-	// ✅ Redirect to dashboard
+	// Redirect to dashboard
 	c.Redirect(http.StatusSeeOther, "/dashboard")
 }
 
