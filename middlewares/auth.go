@@ -61,7 +61,7 @@ func Authenticate(c *gin.Context) {
 		return
 	}
 
-	userId, err := utils.VerifyToken(token)
+	userId, email, err := utils.VerifyToken(token)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login-page")
 		c.Abort()
@@ -69,5 +69,6 @@ func Authenticate(c *gin.Context) {
 	}
 
 	c.Set("userId", userId)
+	c.Set("email", email)
 	c.Next()
 }

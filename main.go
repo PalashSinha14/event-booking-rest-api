@@ -2,12 +2,13 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/palashsinha14/go-rest-api/db"
-	"github.com/palashsinha14/go-rest-api/routes"
 	"github.com/palashsinha14/go-rest-api/middlewares"
+	"github.com/palashsinha14/go-rest-api/routes"
 )
 
 func main() {
@@ -32,17 +33,31 @@ func main() {
 		c.HTML(200, "signup.html", nil)
 	})
 
-/*	server.GET("/dashboard", func(c *gin.Context) {
+	/*	server.GET("/dashboard", func(c *gin.Context) {
 		c.HTML(200, "dashboard.html", nil)
 	})*/
-/*
-	server.GET("/dashboard", middlewares.AuthMiddlewareHTML, func(c *gin.Context) {
-	c.HTML(200, "dashboard.html", nil)
-	})
-*/
-	server.GET("/dashboard", middlewares.Authenticate, func(c *gin.Context) {
+	/*
+		server.GET("/dashboard", middlewares.AuthMiddlewareHTML, func(c *gin.Context) {
 		c.HTML(200, "dashboard.html", nil)
+		})
+	*/
+	server.GET("/dashboard", middlewares.Authenticate, func(c *gin.Context) {
+		email, _ := c.Get("email")
+		userId, _ := c.Get("userId")
+		c.HTML(200, "dashboard.html", gin.H{
+			"email":  email,
+			"userId": userId,
+		})
 	})
+
+	//Logout feature
+	server.GET("/logout", func(c *gin.Context) {
+		// Clear cookie
+		c.SetCookie("token", "", -1, "/", "", true, true)
+		// Redirect to login
+		c.Redirect(http.StatusSeeOther, "/login-page")
+	})
+
 	routes.RegisterRoutes(server)
 
 	// Render / Docker dynamic port
