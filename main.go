@@ -9,6 +9,7 @@ import (
 	"github.com/palashsinha14/go-rest-api/db"
 	"github.com/palashsinha14/go-rest-api/middlewares"
 	"github.com/palashsinha14/go-rest-api/routes"
+	"github.com/palashsinha14/go-rest-api/models"
 )
 
 func main() {
@@ -47,6 +48,19 @@ func main() {
 		c.HTML(200, "dashboard.html", gin.H{
 			"email":  email,
 			"userId": userId,
+		})
+	})
+
+	server.GET("/events-page", func(c *gin.Context) {
+		events, err := models.GetAllEvents()
+		if err != nil {
+			c.HTML(500, "events.html", gin.H{
+				"error": "Could not load events",
+			})
+			return
+		}
+		c.HTML(200, "events.html", gin.H{
+			"events": events,
 		})
 	})
 
