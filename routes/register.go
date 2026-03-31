@@ -10,6 +10,32 @@ import (
 
 func registerForEvent(c *gin.Context) {
 	userId := c.GetInt64("userId")
+
+	eventId, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.String(400, "Invalid event ID")
+		return
+	}
+
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		c.String(500, "Event not found")
+		return
+	}
+
+	err = event.Register(userId)
+	if err != nil {
+		c.String(500, "Could not register")
+		return
+	}
+
+	// ✅ Redirect instead of JSON
+	c.Redirect(http.StatusSeeOther, "/register-page")
+}
+
+/*
+func registerForEvent(c *gin.Context) {
+	userId := c.GetInt64("userId")
 	eventId, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event id."})
@@ -27,7 +53,7 @@ func registerForEvent(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, gin.H{"message": "Registered!"})
 }
-
+*/
 func cancelRegistration(c *gin.Context) {
 	userId := c.GetInt64("userId")
 	eventId, err := strconv.ParseInt(c.Param("id"), 10, 64)

@@ -101,6 +101,18 @@ func main() {
 		c.Redirect(http.StatusSeeOther, "/events-page")
 	})
 
+	//registration for event
+	server.GET("/register-page", middlewares.Authenticate, func(c *gin.Context) {
+		events, err := models.GetAllEvents()
+		if err != nil {
+			c.String(500, "Error loading events")
+			return
+		}
+		c.HTML(200, "register.html", gin.H{
+			"events": events,
+		})
+	})
+
 	//Logout feature
 	server.GET("/logout", func(c *gin.Context) {
 		// Clear cookie
