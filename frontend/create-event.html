@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Create Event</title>
+<link rel="stylesheet" href="/static/CSS/styles.css">
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h2>Create Your Event</h2>
+
+<form action="/create-event" method="POST">
+
+<input type="text" name="name" placeholder="Event Name" required>
+
+<input type="text" name="description" placeholder="Description" required>
+
+<input type="text" name="location" placeholder="Location" required>
+
+<input type="datetime-local" name="datetime" required>
+
+<button type="submit">Create Event</button>
+
+</form>
+
+<br>
+<a href="/dashboard">⬅ Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>
