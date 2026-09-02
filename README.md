@@ -41,6 +41,7 @@ The application uses:
 - Protected routes using middleware
 - Password hashing using bcrypt
 - Token validation for secured endpoints
+- Rate limiting on login and signup (hand-rolled per-IP token bucket, 1 request/sec with a burst of 5) to throttle brute-force attempts
 
 ### 📅 Event Management
 - Create events
@@ -50,6 +51,11 @@ The application uses:
 - Prevent duplicate registrations
 - View events you created (**My Events**), with the option to delete them
 - View events you've registered for (**My Registrations**), with the option to cancel a registration
+
+### ⚡ Concurrency
+- Background worker pool (goroutines reading from a buffered channel) processes a confirmation job asynchronously after event registration
+- Non-blocking job enqueue — the request returns immediately while the work happens off the request path
+- *(Simulated confirmation only for now — no real email provider is wired in; each worker logs the "sent" confirmation rather than delivering a real email)*
 
 ### 🖥️ Web Interface
 - Server-rendered HTML pages (Go `html/template` via Gin) for signup, login, dashboard, event browsing, and event creation
@@ -89,9 +95,10 @@ The application uses:
 ├── db/                # Database initialization and connection logic
 ├── models/            # Database models and SQL operations
 ├── routes/            # Route handlers
-├── middlewares/       # JWT authentication middleware
+├── middlewares/       # JWT authentication middleware, per-IP rate limiting
 ├── utils/             # Helper utilities (token generation, hashing)
 ├── frontend/          # Server-rendered HTML pages, shared navbar partial, CSS and JS assets
+├── notifier/          # Background worker pool for async confirmation jobs (simulated)
 ├── docker-compose.yml
 ├── Dockerfile
 ├── .env.local
@@ -194,6 +201,8 @@ docker compose up --build
 - Environment switching for configuration
 - Connection retry strategy
 - Connection pooling optimization
+- Concurrent worker-pool pattern (goroutines + buffered channel, non-blocking enqueue)
+- Hand-rolled token-bucket rate limiting (no external dependency)
 
 ## How It Works (Flow)
 
