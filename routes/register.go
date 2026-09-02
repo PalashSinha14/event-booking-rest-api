@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/palashsinha14/go-rest-api/models"
+	"github.com/palashsinha14/go-rest-api/notifier"
 )
 
 func registerForEvent(c *gin.Context) {
@@ -28,6 +29,13 @@ func registerForEvent(c *gin.Context) {
 		c.String(500, "Could not register")
 		return
 	}
+
+	// Queue a (simulated) confirmation job on a background worker instead
+	// of handling it inline, so this request returns immediately.
+	notifier.Enqueue(notifier.ConfirmationJob{
+		UserEmail: c.GetString("email"),
+		EventName: event.Name,
+	})
 
 	// ✅ Redirect instead of JSON
 	c.Redirect(http.StatusSeeOther, "/my-registrations-page")

@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/palashsinha14/go-rest-api/db"
 	"github.com/palashsinha14/go-rest-api/middlewares"
+	"github.com/palashsinha14/go-rest-api/notifier"
 	"github.com/palashsinha14/go-rest-api/routes"
 	"github.com/palashsinha14/go-rest-api/models"
 )
@@ -16,6 +17,8 @@ import (
 func main() {
 
 	db.InitDB()
+
+	notifier.StartWorkers(3)
 
 	server := gin.Default()
 
