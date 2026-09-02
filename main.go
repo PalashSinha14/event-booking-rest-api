@@ -122,6 +122,7 @@ func main() {
 	})
 
 	routes.RegisterRoutes(server)
+	routes.RegisterMyEventsRoutes(server)
 
 	// Render / Docker dynamic port
 	port := os.Getenv("PORT")

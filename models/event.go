@@ -80,6 +80,85 @@ func GetAllEvents() ([]Event, error) {
 	return events, nil
 }
 
+// GET EVENTS CREATED BY A USER
+
+func GetEventsByUserID(userId int64) ([]Event, error) {
+
+	query := `
+	SELECT id, name, description, location, dateTime, user_id
+	FROM events
+	WHERE user_id = $1;
+	`
+
+	rows, err := db.DB.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []Event
+
+	for rows.Next() {
+		var event Event
+
+		err := rows.Scan(
+			&event.ID,
+			&event.Name,
+			&event.Description,
+			&event.Location,
+			&event.DateTime,
+			&event.UserID,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+// GET EVENTS A USER IS REGISTERED FOR
+
+func GetRegisteredEventsByUserID(userId int64) ([]Event, error) {
+
+	query := `
+	SELECT e.id, e.name, e.description, e.location, e.dateTime, e.user_id
+	FROM events e
+	JOIN registrations r ON r.event_id = e.id
+	WHERE r.user_id = $1;
+	`
+
+	rows, err := db.DB.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []Event
+
+	for rows.Next() {
+		var event Event
+
+		err := rows.Scan(
+			&event.ID,
+			&event.Name,
+			&event.Description,
+			&event.Location,
+			&event.DateTime,
+			&event.UserID,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
 // GET EVENT BY ID
 
 func GetEventByID(id int64) (*Event, error) {
