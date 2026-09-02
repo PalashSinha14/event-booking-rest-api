@@ -334,13 +334,31 @@ func createTables() {
 		event_id INTEGER,
 		user_id INTEGER,
 		FOREIGN KEY(event_id) REFERENCES events(id),
-		FOREIGN KEY(user_id) REFERENCES users(id)
+		FOREIGN KEY(user_id) REFERENCES users(id),
+		UNIQUE(event_id, user_id)
 	);
 	`
 
 	_, err = DB.Exec(createRegistrationsTable)
 	if err != nil {
 		panic("Could not create registrations table")
+	}
+
+	// CREATE TABLE IF NOT EXISTS is a no-op on a database that already has
+	// this table from before the UNIQUE constraint above existed, so it
+	// wouldn't pick up the constraint on its own. Add it defensively here
+	// too. This is non-fatal: on a fresh install it harmlessly fails
+	// because the constraint above already added it; on an existing
+	// database it actually adds the constraint, or fails with a clear
+	// "duplicate data" error if old duplicate registrations need cleaning
+	// up first - either way, a missing constraint shouldn't crash boot.
+	addRegistrationsUniqueConstraint := `
+	ALTER TABLE registrations
+	ADD CONSTRAINT uq_registrations_event_user UNIQUE (event_id, user_id);
+	`
+
+	if _, err := DB.Exec(addRegistrationsUniqueConstraint); err != nil {
+		log.Printf("Skipping registrations unique constraint (likely already exists, or duplicate rows need cleanup first): %v", err)
 	}
 }
 

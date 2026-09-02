@@ -76,6 +76,8 @@ The application uses:
 - Volume persistence for PostgreSQL
 - Cloud deployment ready (EC2 compatible)
 - Live deployment on Render, built and run from the project's Docker image
+- Graceful shutdown — finishes in-flight requests (up to a 10s deadline) before exiting on SIGINT/SIGTERM, instead of dropping active connections
+- `/healthz` endpoint for liveness/readiness checks
 
 ## Tech Stack
 
@@ -147,6 +149,11 @@ docker compose up --build
 
 ## API Endpoints
 
+### Health
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/healthz` | Liveness/readiness check — also pings the database, returns 503 if unreachable |
+
 ### Authentication
 | Method | Endpoint | Description |
 |---|---|---|
@@ -203,6 +210,7 @@ docker compose up --build
 - Connection pooling optimization
 - Concurrent worker-pool pattern (goroutines + buffered channel, non-blocking enqueue)
 - Hand-rolled token-bucket rate limiting (no external dependency)
+- Graceful shutdown (`context` + `signal.NotifyContext` + `http.Server.Shutdown`)
 
 ## How It Works (Flow)
 

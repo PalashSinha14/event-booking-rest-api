@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 	"github.com/palashsinha14/go-rest-api/models"
 	"github.com/palashsinha14/go-rest-api/notifier"
 )
@@ -26,6 +27,14 @@ func registerForEvent(c *gin.Context) {
 
 	err = event.Register(userId)
 	if err != nil {
+		// A unique_violation (Postgres error code 23505) means this user
+		// already registered for this event - the UNIQUE(event_id, user_id)
+		// constraint caught it. Give a clear message instead of a generic
+		// 500 for this specific, expected case.
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
+			c.String(http.StatusConflict, "You are already registered for this event")
+			return
+		}
 		c.String(500, "Could not register")
 		return
 	}

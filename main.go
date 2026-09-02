@@ -1,8 +1,14 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/palashsinha14/go-rest-api/db"
@@ -26,6 +32,7 @@ func main() {
 	routes.RegisterPageRoutes(server)
 	routes.RegisterRoutes(server)
 	routes.RegisterMyEventsRoutes(server)
+	routes.RegisterHealthRoute(server)
 
 	// Render / Docker dynamic port
 	port := os.Getenv("PORT")
@@ -33,7 +40,38 @@ func main() {
 		port = "8080"
 	}
 
-	log.Println("Server running on port:", port)
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: server,
+	}
 
-	server.Run(":" + port)
+	// Run the server in the background so the main goroutine is free to
+	// wait for a shutdown signal below.
+	go func() {
+		log.Println("Server running on port:", port)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	// Block until an interrupt/terminate signal arrives (e.g. Ctrl+C
+	// locally, or SIGTERM from Docker/Render when stopping the container).
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	<-ctx.Done()
+	stop()
+
+	log.Println("Shutdown signal received, finishing in-flight requests...")
+
+	// Give in-flight requests up to 10 seconds to finish before forcing
+	// the connections closed.
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		log.Fatal("Server forced to shut down:", err)
+	}
+
+	db.DB.Close()
+
+	log.Println("Server exited cleanly")
 }
