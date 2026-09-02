@@ -50,6 +50,8 @@
 
 <body>
 
+{{template "navbar" .}}
+
 <div class="container">
 
 <h1 style="text-align:center;">My Events</h1>
@@ -86,9 +88,6 @@
 {{else}}
 <p>You haven't created any events yet.</p>
 {{end}}
-
-<br>
-<a href="/dashboard">⬅ Back to Dashboard</a>
 
 </div>
 

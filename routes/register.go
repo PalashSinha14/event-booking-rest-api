@@ -30,7 +30,7 @@ func registerForEvent(c *gin.Context) {
 	}
 
 	// ✅ Redirect instead of JSON
-	c.Redirect(http.StatusSeeOther, "/register-page")
+	c.Redirect(http.StatusSeeOther, "/my-registrations-page")
 }
 
 /*

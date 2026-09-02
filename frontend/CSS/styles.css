@@ -1,16 +1,21 @@
 body{
 font-family: Arial;
 background:#f3f2ef;
+margin:0;
+min-height:100vh;
+}
+
+body.center-page{
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
 }
 
 .form-box{
 background:white;
 padding:40px;
 width:320px;
+margin:60px auto;
 box-shadow:0 0 10px rgba(0,0,0,0.1);
 border-radius:8px;
 }
@@ -40,6 +45,9 @@ background:#004182;
 
 .container{
 text-align:center;
+max-width:1000px;
+margin:40px auto;
+padding:0 20px;
 }
 
 .buttons a{
@@ -49,4 +57,68 @@ background:#0a66c2;
 color:white;
 text-decoration:none;
 border-radius:4px;
+}
+
+/* Top navbar shown on every logged-in page (see frontend/navbar.html) */
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#0a66c2;
+padding:14px 30px;
+}
+
+.navbar-brand{
+color:white;
+font-weight:bold;
+font-size:18px;
+text-decoration:none;
+}
+
+.navbar-logout{
+color:white;
+text-decoration:none;
+background:rgba(255,255,255,0.15);
+padding:8px 16px;
+border-radius:4px;
+}
+
+.navbar-logout:hover{
+background:rgba(255,255,255,0.3);
+}
+
+/* Dashboard action grid */
+.actions-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+gap:20px;
+max-width:800px;
+margin:30px auto 0;
+}
+
+.action-card{
+background:white;
+padding:25px 15px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.08);
+text-decoration:none;
+color:#222;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:10px;
+transition:transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.action-card:hover{
+transform:translateY(-3px);
+box-shadow:0 4px 14px rgba(0,0,0,0.15);
+}
+
+.action-icon{
+font-size:28px;
+}
+
+.action-label{
+font-weight:600;
 }

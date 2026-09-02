@@ -98,7 +98,7 @@ func main() {
 			})
 			return
 		}
-		c.Redirect(http.StatusSeeOther, "/events-page")
+		c.Redirect(http.StatusSeeOther, "/my-events-page")
 	})
 
 	//registration for event
