@@ -2,11 +2,11 @@
 
 **A production-ready backend service for creating, browsing, and registering for events — built with Go, Gin, and PostgreSQL.**
 
-![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go&logoColor=white)
-![Gin](https://img.shields.io/badge/Gin-Web%20Framework-008ECF)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)
-![JWT](https://img.shields.io/badge/Auth-JWT-black?logo=jsonwebtokens)
+![Go]
+![Gin]
+![PostgreSQL]
+![Docker]
+![JWT]
 
 **🔗 Live Demo:** [event-booking-rest-api.onrender.com](https://event-booking-rest-api.onrender.com)
 *(Deployed on Render, built and run from this project's Docker image)*
