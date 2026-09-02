@@ -2,11 +2,11 @@
 
 **A production-ready backend service for creating, browsing, and registering for events — built with Go, Gin, and PostgreSQL.**
 
-![Go]
-![Gin]
-![PostgreSQL]
-![Docker]
-![JWT]
+[Go]
+[Gin]
+[PostgreSQL]
+[Docker]
+[JWT]
 
 **🔗 Live Demo:** [event-booking-rest-api.onrender.com](https://event-booking-rest-api.onrender.com)
 *(Deployed on Render, built and run from this project's Docker image)*
@@ -242,4 +242,5 @@ It uses:
 ## Author
 
 **Palash Sinha**
+
 Backend Developer (Golang Focused)
