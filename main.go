@@ -17,6 +17,18 @@ import (
 	"github.com/palashsinha14/go-rest-api/routes"
 )
 
+// @title           Event Booking REST API
+// @version         1.0
+// @description     A production-ready RESTful backend service for creating, browsing, and registering for events. Built with Go, Gin, and PostgreSQL.
+// @contact.name    Palash Sinha
+// @host            event-booking-rest-api.onrender.com
+// @BasePath        /
+// @schemes         https
+
+// @securityDefinitions.apikey  CookieAuth
+// @in                          cookie
+// @name                        token
+// @description                 JWT issued by POST /login, stored as an httpOnly cookie named "token".
 func main() {
 
 	db.InitDB()
@@ -33,6 +45,7 @@ func main() {
 	routes.RegisterRoutes(server)
 	routes.RegisterMyEventsRoutes(server)
 	routes.RegisterHealthRoute(server)
+	routes.RegisterSwaggerRoute(server)
 
 	// Render / Docker dynamic port
 	port := os.Getenv("PORT")

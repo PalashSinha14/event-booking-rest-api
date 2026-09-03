@@ -8,6 +8,17 @@ import (
 	"github.com/palashsinha14/go-rest-api/utils"
 )
 
+// signup godoc
+// @Summary      Create a new account
+// @Description  Register a new user with an email and password
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials  body      models.User  true  "Email and password"
+// @Success      201          {object}  map[string]string
+// @Failure      400          {object}  map[string]string
+// @Failure      500          {object}  map[string]string
+// @Router       /signup [post]
 func signup(c *gin.Context) {
 	var user models.User
 	err := c.ShouldBindJSON(&user)
@@ -23,6 +34,18 @@ func signup(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successsfully!"})
 }
 
+// login godoc
+// @Summary      Log in
+// @Description  Authenticate with email and password. On success, sets an httpOnly JWT cookie and redirects to /dashboard - this endpoint is built for the browser login form, not a JSON API client.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials  body  models.User  true  "Email and password"
+// @Success      303  "Redirects to /dashboard, JWT set as an httpOnly cookie"
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /login [post]
 func login(c *gin.Context) {
 	var user models.User
 

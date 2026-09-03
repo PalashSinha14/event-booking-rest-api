@@ -10,6 +10,18 @@ import (
 	"github.com/palashsinha14/go-rest-api/notifier"
 )
 
+// registerForEvent godoc
+// @Summary      Register for an event
+// @Description  Register the authenticated user for an event. Redirects to /my-registrations-page on success - built for the browser, not a JSON API client.
+// @Tags         registrations
+// @Produce      plain
+// @Param        id   path  int  true  "Event ID"
+// @Success      303  "Redirects to /my-registrations-page"
+// @Failure      400  {string}  string  "invalid event id"
+// @Failure      409  {string}  string  "already registered for this event"
+// @Failure      500  {string}  string
+// @Security     CookieAuth
+// @Router       /events/{id}/register [post]
 func registerForEvent(c *gin.Context) {
 	userId := c.GetInt64("userId")
 
@@ -71,6 +83,16 @@ func registerForEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Registered!"})
 }
 */
+// cancelRegistration godoc
+// @Summary      Cancel a registration
+// @Description  Cancel the authenticated user's registration for an event
+// @Tags         registrations
+// @Produce      json
+// @Param        id   path      int  true  "Event ID"
+// @Success      200  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Security     CookieAuth
+// @Router       /events/{id}/register [delete]
 func cancelRegistration(c *gin.Context) {
 	userId := c.GetInt64("userId")
 	eventId, err := strconv.ParseInt(c.Param("id"), 10, 64)

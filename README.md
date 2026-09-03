@@ -11,6 +11,8 @@
 **🔗 Live Demo:** [event-booking-rest-api.onrender.com](https://event-booking-rest-api.onrender.com)
 *(Deployed on Render, built and run from this project's Docker image)*
 
+**📖 API Docs:** [event-booking-rest-api.onrender.com/swagger/index.html](https://event-booking-rest-api.onrender.com/swagger/index.html)
+
 ---
 
 ## Overview
@@ -57,6 +59,10 @@ The application uses:
 - Non-blocking job enqueue — the request returns immediately while the work happens off the request path
 - *(Simulated confirmation only for now — no real email provider is wired in; each worker logs the "sent" confirmation rather than delivering a real email)*
 
+### 📖 API Documentation
+- Interactive Swagger UI at `/swagger/index.html`, generated from code annotations via [swaggo/swag](https://github.com/swaggo/swag)
+- Covers every JSON API endpoint (auth, events, registration, health)
+
 ### 🖥️ Web Interface
 - Server-rendered HTML pages (Go `html/template` via Gin) for signup, login, dashboard, event browsing, and event creation
 - Shared navigation bar (reusable Go template partial) across all logged-in pages
@@ -101,6 +107,7 @@ The application uses:
 ├── utils/             # Helper utilities (token generation, hashing)
 ├── frontend/          # Server-rendered HTML pages, shared navbar partial, CSS and JS assets
 ├── notifier/          # Background worker pool for async confirmation jobs (simulated)
+├── docs/              # Generated OpenAPI/Swagger spec (swag init) - do not hand-edit
 ├── docker-compose.yml
 ├── Dockerfile
 ├── .env.local
@@ -148,6 +155,11 @@ docker compose up --build
 ```
 
 ## API Endpoints
+
+> Full interactive documentation (request/response schemas, try-it-out) is available at [`/swagger/index.html`](https://event-booking-rest-api.onrender.com/swagger/index.html). The table below is a quick-reference summary; after changing any handler's `@...` doc comments, regenerate it with:
+> ```bash
+> swag init -g main.go --output docs
+> ```
 
 ### Health
 | Method | Endpoint | Description |
