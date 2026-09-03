@@ -95,6 +95,7 @@ The application uses:
 | Containerization | Docker, Docker Compose |
 | Authentication | JWT (JSON Web Tokens), bcrypt |
 | Query Layer | Raw SQL (`database/sql`) |
+| API Documentation | Swagger / OpenAPI ([swaggo/swag](https://github.com/swaggo/swag), gin-swagger) |
 
 ## Project Structure
 
@@ -156,7 +157,7 @@ docker compose up --build
 
 ## API Endpoints
 
-> Full interactive documentation (request/response schemas, try-it-out) is available at [`/swagger/index.html`](https://event-booking-rest-api.onrender.com/swagger/index.html). The table below is a quick-reference summary; after changing any handler's `@...` doc comments, regenerate it with:
+> Full interactive documentation (request/response schemas, try-it-out) is available at [`/swagger/index.html`](https://event-booking-rest-api.onrender.com/swagger/index.html). The table below is a quick-reference summary; after changing any handler's `@...` doc comments, regenerate the spec (requires the `swag` CLI, installed once with `go install github.com/swaggo/swag/cmd/swag@v1.16.4`):
 > ```bash
 > swag init -g main.go --output docs
 > ```
@@ -266,7 +267,10 @@ It uses:
 - [ ] Refresh tokens
 - [ ] CI/CD pipeline
 - [ ] Logging & monitoring integration
-- [ ] Swagger API documentation
+- [ ] Automated test suite
+- [ ] Repository/service layer with mockable interfaces
+- [ ] Event capacity with concurrency-safe registration
+- [ ] Redis (token blacklist on logout, response caching)
 
 ## Author
 
